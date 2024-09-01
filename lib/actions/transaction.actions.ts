@@ -7,9 +7,11 @@ import { parseStringify } from "../utils";
 const {
   APPWRITE_DATABASE_ID: DATABASE_ID,
   APPWRITE_TRANSACTION_COLLECTION_ID: TRANSACTION_COLLECTION_ID,
-} = process.env; 
+} = process.env;
 
-export const createTransaction = async (transaction: CreateTransactionProps) => {
+export const createTransaction = async (
+  transaction: CreateTransactionProps
+) => {
   try {
     const { database } = await createAdminClient();
 
@@ -18,46 +20,46 @@ export const createTransaction = async (transaction: CreateTransactionProps) => 
       TRANSACTION_COLLECTION_ID!,
       ID.unique(),
       {
-        channel: 'online',
-        category: 'Transfer',
-        ...transaction
+        channel: "online",
+        category: "Transfer",
+        ...transaction,
       }
-    )
+    );
 
     return parseStringify(newTransaction);
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
   }
-}
+};
 
-export const getTransactionsByBankId = async ({ bankId }: getTransactionsByBankIdProps) => {
+export const getTransactionsByBankId = async ({
+  bankId,
+}: getTransactionsByBankIdProps) => {
   try {
     const { database } = await createAdminClient();
 
     const senderTransactions = await database.listDocuments(
       DATABASE_ID!,
       TRANSACTION_COLLECTION_ID!,
-      [Query.equal('senderBankId', bankId)],
-    )
+      [Query.equal("senderBankId", bankId)]
+    );
 
     const receiverTransactions = await database.listDocuments(
       DATABASE_ID!,
       TRANSACTION_COLLECTION_ID!,
-      [Query.equal('receiverBankId', bankId)],
-    )
+      [Query.equal("receiverBankId", bankId)]
+    );
 
     const transactions = {
       total: senderTransactions.total + receiverTransactions.total,
       documents: [
         ...senderTransactions.documents,
-        ...receiverTransactions.documents
-      ]
-    }
+        ...receiverTransactions.documents,
+      ],
+    };
 
     return parseStringify(transactions);
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
   }
-}
+};

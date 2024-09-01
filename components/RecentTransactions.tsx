@@ -1,32 +1,32 @@
-import Link from 'next/link'
-import React from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { BankTabItem } from './BankTabItem'
-import BankInfo from './BankInfo'
-import TransactionTable from './TransactionTable'
-import { Pagination } from './Pagination'
+import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BankTabItem } from "./BankTabItem";
+import BankInfo from "./BankInfo";
+import TransactionTable from "./TransactionTable";
+import { Pagination } from "./Pagination";
 
 const RecentTransactions = ({
   accounts,
   transactions = [],
   appwriteItemId,
-  page = 1
+  page = 1,
 }: RecentTransactionsProps) => {
-  const rowsperPage = 10;
-  const totalPages = Math.ceil(transactions.length / rowsperPage);
+  const rowsPerPage = 10;
+  const totalPages = Math.ceil(transactions.length / rowsPerPage);
 
-  const indexOfLastTransaction = page * rowsperPage;
-  const indexOfFirstTransaction = indexOfLastTransaction - rowsperPage;
+  const indexOfLastTransaction = page * rowsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
 
-  const currentTransactions = transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
+  const currentTransactions = transactions.slice(
+    indexOfFirstTransaction,
+    indexOfLastTransaction
+  );
 
   return (
     <section className="recent-transactions">
       <header className="flex items-center justify-between">
-        <h2 className="recent-transactions-label">
-          Recent Transactions
-        </h2>
-        <Link 
+        <h2 className="recent-transactions-label">Recent Transactions</h2>
+        <Link
           href={`/transaction-history/?id=${appwriteItemId}`}
           className="view-all-btn"
         >
@@ -38,7 +38,7 @@ const RecentTransactions = ({
         <TabsList className="recent-transactions-tablist">
           {accounts.map((account: Account) => (
             <TabsTrigger key={account.id} value={account.appwriteItemId}>
-              <BankTabItem 
+              <BankTabItem
                 key={account.id}
                 account={account}
                 appwriteItemId={appwriteItemId}
@@ -48,34 +48,28 @@ const RecentTransactions = ({
         </TabsList>
 
         {accounts.map((account: Account) => (
-          <TabsContent 
+          <TabsContent
             value={account.appwriteItemId}
             key={account.id}
             className="space-y-4"
           >
-            <BankInfo 
+            <BankInfo
               account={account}
               appwriteItemId={appwriteItemId}
               type="full"
             />
-            <TransactionTable 
-              transactions={currentTransactions}
-            />
+            <TransactionTable transactions={currentTransactions} />
 
             {totalPages > 1 && (
               <div className="my-4 w-full">
-                <Pagination 
-                  totalPages={totalPages}
-                  page={page}
-                />
+                <Pagination totalPages={totalPages} page={page} />
               </div>
             )}
           </TabsContent>
         ))}
       </Tabs>
-
     </section>
-  )
-}
+  );
+};
 
-export default RecentTransactions
+export default RecentTransactions;
